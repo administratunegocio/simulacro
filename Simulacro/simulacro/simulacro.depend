@@ -1,0 +1,13 @@
+# depslib dependency file v1.0
+1707578122 source:d:\pila.c
+	"pila.h"
+
+1707578122 d:\pila.h
+	<stdio.h>
+	<malloc.h>
+
+1741210226 source:d:\112\simulacro\simulacro\main.c
+	<stdio.h>
+	<stdlib.h>
+	"../../../pila.h"
+
