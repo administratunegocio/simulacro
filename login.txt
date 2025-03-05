@@ -1,0 +1,47 @@
+def ob_usuario(usuario):
+	cone = obtener_bd()
+	cursor = cone.cursor(dictionary=True)
+
+	query = "SELECT id_user, user, password FROM usuarios WHERE user = %s;"
+	values = (usuario,)
+
+	try:
+		cursor.execute(query, values)
+		resultado = cursor.fetchone()
+		return resultado
+	
+	except Error as e:
+		flash(f'Error: {e}')
+		return None
+
+	finally:
+		cursor.close()
+		cone.close()
+
+
+@app.route('/inicio-sesion')
+def iniciando():
+	if request.method == "POST":
+		user = request.form.get('user')
+		password = request.form.get('password')
+
+		cone = obtener_bd()
+		cursor = cone.cursor()
+
+		try:
+			usuario = ob_usuario(user)
+
+			if usuario and check_password_hash(usuario['password'], password):
+				session ['username'] = user
+				flash(f'Iniciaste sesion')
+				return redirect(url_for('inicio'))
+			else:
+				flash('Usuario/contraseña incorrecto/s')
+
+		except Error as e:
+			flash(f'eror {e}')
+
+		finally:
+			cone.close()
+			cursos.close()
+	return render_template('login/login.html')
