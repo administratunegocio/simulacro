@@ -81,3 +81,304 @@ def agregando():
             cone.close()
     return render_template('tareas/agregar.html')
 
+
+
+
+
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include "../../pila.h"
+#include <time.h>
+
+int main()
+{
+    /**srand(time(NULL));
+    int numero = rand() % 10 + 1;
+    printf("%d \n", numero);
+    */
+
+    /** CARGA DE MESES */
+    Pila meses;
+    inicpila (&meses);
+
+    apilar(&meses, 1);
+    apilar(&meses, 2);
+    apilar(&meses, 3);
+    apilar(&meses, 4);
+    apilar(&meses, 5);
+    apilar(&meses, 6);
+    apilar(&meses, 7);
+    apilar(&meses, 8);
+    apilar(&meses, 9);
+    apilar(&meses, 10);
+    apilar(&meses, 11);
+    apilar(&meses, 12);
+    /** mostrar(&meses);*/
+    /** FIN DE CARGA DE MESES */
+    Pila temperaturas;
+    inicpila(&temperaturas);
+
+    int opcion;
+    do{
+        printf("\n\n --------- Menu ---------- \n\n");
+        printf("\n\n Alumno: Ortiz Martinez Joaquin. Comision: 112\n\n");
+        printf("1- Ingresar las temperaturas manualmente \n");
+
+        printf("2- Generar las temperaturas de manera aleatoria \n");
+
+        printf("3- Mostrar el promedio más alto y bajo, indicando en qué mes se dieron \n");
+
+        printf("4- Clasificar los promedios de temperaturas del año según semestre. \n");
+
+        printf("5- Actualizar promedio de un mes \n");
+
+        printf("6- Calcular y mostrar el promedio de cada semestre \n");
+
+        printf("7- Mostrar las pilas: Meses y Temperaturas \n");
+
+        printf("8- Salir \n");
+
+        printf("Ingrese una opcion: \n");
+        scanf("%i", &opcion);
+        printf("\n \n");
+
+        switch(opcion){
+            case 1:{
+
+                int i=1;
+                while(i<=12){
+                    printf("ingrese temperatura para el mes %i \n", i);
+
+                    leer(&temperaturas);
+                    if(tope(&temperaturas)>= -30 && tope(&temperaturas)<=50){
+                        printf("\n");
+                        i += 1;
+                    }
+                    else{
+                        desapilar(&temperaturas);
+                        printf("Recorda que tiene que ser entre -30 y 50 \n");
+                    }
+                }
+                break;
+
+            }
+            case 2:{
+                printf("Generando temperaturas...\n");
+                srand(time(NULL));
+
+                for(int i = 1; i<=12; i++){
+                    int numero = rand() % 50 + -30;
+                    apilar(&temperaturas, numero);
+                }
+
+                break;
+            }
+            case 3:{
+
+                int bajo = 70;
+                int alto = -50;
+
+                int mes_bajo = 13;
+                int mes_bajo_final = 0;
+
+                int mes_alto= 13;
+                int mes_alto_final = 0;
+
+                Pila aux_bajo_alto;
+                inicpila(&aux_bajo_alto);
+
+
+                /** Temperatura mas baja */
+                while(!pilavacia(&temperaturas)){
+
+                    int temperatura_actual = desapilar(&temperaturas);
+                    mes_bajo -= 1;
+                    if(bajo<temperatura_actual){
+                        bajo = bajo;
+                    }
+                    else{
+                        bajo = temperatura_actual;
+                        mes_bajo_final = mes_bajo;
+                    }
+                    apilar(&aux_bajo_alto, temperatura_actual);
+                }
+
+                /** Temperatura mas alta */
+                while(!pilavacia(&aux_bajo_alto)){
+                    apilar(&temperaturas, desapilar(&aux_bajo_alto));
+                }
+
+                while(!pilavacia(&temperaturas)){
+
+                    int temperatura_actual = desapilar(&temperaturas);
+                    mes_alto -= 1;
+                    if(alto>temperatura_actual){
+                        alto = alto;
+                    }
+                    else{
+                        alto = temperatura_actual;
+                        mes_alto_final = mes_alto;
+                    }
+                    apilar(&aux_bajo_alto, temperatura_actual);
+                }
+                printf("Mes con temp mas bajo: %i \nTemperatura baja: %i\n\n", mes_bajo_final, bajo);
+                printf("Mes con temp mas alto: %i \nTemperatura alta: %i\n\n", mes_alto_final, alto);
+
+                while(!pilavacia(&aux_bajo_alto)){
+                    apilar(&temperaturas, desapilar(&aux_bajo_alto));
+                }
+                break;
+            }
+
+            case 4:{
+                Pila auxiliar;
+                inicpila(&auxiliar);
+
+
+                Pila primer_semestre;
+                Pila segundo_semestre;
+
+                inicpila(&primer_semestre);
+                inicpila(&segundo_semestre);
+
+
+                printf("clasificando temperaturas... \n");
+                int temp;
+
+                while(!pilavacia(&temperaturas)){
+                    temp = desapilar(&temperaturas);
+                    apilar(&auxiliar, temp);
+                }
+                while(!pilavacia(&auxiliar)){
+                    for(int i = 1; i<=12; i++){
+                        if(i<=6){
+                            temp = desapilar(&auxiliar);
+                            apilar(&primer_semestre, temp);
+                            apilar(&temperaturas, temp);
+
+                            }
+                            else{
+                                temp = desapilar(&auxiliar);
+                                apilar(&segundo_semestre, temp);
+                                apilar(&temperaturas, temp);
+
+                            }
+                                                }
+
+            }
+                break;
+            }
+            case 5: {
+                Pila auxiliar;
+                inicpila (&auxiliar);
+
+                int valor_buscado;
+                int nueva_temp;
+                int mes = 13;
+
+                printf("De que mes queres cambiar la temperatura?\n\n");
+                scanf("%i", &valor_buscado);
+
+
+                while(!pilavacia(&temperaturas)){
+                    mes -= 1;
+                    if(mes == valor_buscado){
+                        printf("Ingrese nueva temperatura: \n");
+                        scanf("%i", &nueva_temp);
+
+                        desapilar(&temperaturas);
+                        apilar(&temperaturas, nueva_temp);
+
+                    }
+                    apilar(&auxiliar, desapilar(&temperaturas));
+                }
+
+                while(!pilavacia(&auxiliar)){
+                    apilar(&temperaturas, desapilar(&auxiliar));
+                }
+                /** mostrar(&temperaturas);*/
+                printf("Temperatura cambiada :) \n \n");
+                break;
+            }
+            case 6:{
+
+                /**clasifico las temperaturas*/
+                Pila auxiliarr;
+                inicpila(&auxiliarr);
+
+
+                Pila primer_semestree;
+                Pila segundo_semestree;
+
+                inicpila(&primer_semestree);
+                inicpila(&segundo_semestree);
+                int temp;
+
+                while(!pilavacia(&temperaturas)){
+                    temp = desapilar(&temperaturas);
+                    apilar(&auxiliarr, temp);
+                }
+                while(!pilavacia(&auxiliarr)){
+                    for(int i = 1; i<=12; i++){
+                        if(i<=6){
+                            temp = desapilar(&auxiliarr);
+                            apilar(&primer_semestree, temp);
+                            apilar(&temperaturas, temp);
+
+                            }
+                            else{
+                                temp = desapilar(&auxiliarr);
+                                apilar(&segundo_semestree, temp);
+                                apilar(&temperaturas, temp);
+
+                            }
+                                                }
+
+            }
+            /**fin clasificacion*/
+
+                int primer_promedio = 0;
+                int segundo_promedio = 0;
+                int suma1 = 0;
+                int suma2 = 0;
+
+                int temperatura = 0;
+                int temperaturaa = 0;
+
+                while(!pilavacia(&primer_semestree)){
+                    temperatura = desapilar(&primer_semestree);
+                    suma1 += temperatura;
+
+                }
+                printf("Primer semestre promedio: %i \n", suma1/6);
+
+                while(!pilavacia(&segundo_semestree)){
+
+                    temperaturaa = desapilar(&segundo_semestree);
+                    suma2 += temperaturaa;
+                }
+                printf("Segundo semestre promedio: %i \n", suma2/6);
+
+
+                break;
+
+            }
+            case 7:{
+                printf("Meses arriba, temperaturas abajo. De forma vertical: \n");
+                mostrar(&meses);
+                printf("\n \n");
+                mostrar(&temperaturas);
+
+            }
+            case 8:{
+                printf("Alumno: Ortiz Martinez Joaquin, Comision: 112 \nSaliendo del programa");
+                break;
+            }
+        }
+    }while(opcion != 8);
+    return 0;
+}
+
+
