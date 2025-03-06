@@ -45,3 +45,39 @@ def iniciando():
 			cone.close()
 			cursos.close()
 	return render_template('login/login.html')
+
+
+
+@app.route('/agregar-tarea', methods=['GET', 'POST'])
+def agregar():
+    return render_template('tareas/agregar.html')
+
+@app.route('/agregando', methods=['GET', 'POST'])
+def agregando():
+    if request.method == 'POST': 
+        cone = obtener_bd()
+        cursor = cone.cursor()
+        
+        tarea = request.form.get('tarea')
+        descripcion = request.form.get('descripcion')
+        fecha = 
+        fecha_v = request.form.get('fecha_v')
+        id_usu = session['user_id']
+
+        tareas = Tarea(tarea, descripcion, fecha, fecha_v, id_usu)
+
+        query = "INSERT INTO tareas (id_usu, tarea, descripcion, fecha, fecha_v) VALUES (%s, %s, %s, %s, %s);"
+        values = (tareas.tarea, tareas.descripcion, )
+        
+        try:
+            cursor.execute(query, values)
+        
+        except Error as e:
+            flash(f'Error: {e}')
+            return redirect(url_for('agregar'))
+        
+        finally:
+            cursor.close()
+            cone.close()
+    return render_template('tareas/agregar.html')
+
